@@ -1,5 +1,5 @@
-import time
 import thumby
+import time
 import math
 
 # BITMAP: width: 7, height: 8
@@ -37,12 +37,6 @@ while True:
     t0 = time.ticks_ms()  # Get current time in ms
     thumby.display.fill(0)  # Clear the display
 
-    # Update and display sprites
-    thumby.display.drawSprite(rocketSprite1)
-    thumby.display.drawSprite(rocketSprite2)
-    thumby.display.drawSprite(planetSprite)
-    thumby.display.update()
-
     # Update rocket 1 position and velocity
     d2_1 = x1 * x1 + y1 * y1
     if d2_1 < 1:
@@ -69,8 +63,8 @@ while True:
     x1 += Vx1 / 40
     y1 += Vy1 / 40
 
-    rocketSprite1.x = x1 + Xo // 2
-    rocketSprite1.y = Yo - (y1 + Yo // 2)
+    rocketSprite1.x = int(x1 + Xo // 2)
+    rocketSprite1.y = int(Yo - (y1 + Yo // 2))
 
     # Update rocket 2 position and velocity
     d2_2 = x2 * x2 + y2 * y2
@@ -98,8 +92,20 @@ while True:
     x2 += Vx2 / 40
     y2 += Vy2 / 40
 
-    rocketSprite2.x = x2 + Xo // 2
-    rocketSprite2.y = Yo - (y2 + Yo // 2)
+    rocketSprite2.x = int(x2 + Xo // 2)
+    rocketSprite2.y = int(Yo - (y2 + Yo // 2))
 
+    # Draw sprites on the display
+    thumby.display.drawSprite(rocketSprite1)
+    thumby.display.drawSprite(rocketSprite2)
+    thumby.display.drawSprite(planetSprite)
+    thumby.display.update()
+
+    # Print positions for debugging (optional)
     print(f"Rocket 1: {x1}, {y1}")
     print(f"Rocket 2: {x2}, {y2}")
+
+    # Maintain consistent FPS
+    t1 = time.ticks_ms()
+    sleep_time = max(0, int(1000 / 60 - (t1 - t0)))
+    time.sleep_ms(sleep_time)
