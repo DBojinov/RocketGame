@@ -24,7 +24,7 @@ Yo = thumby.display.height
 planetSprite.x = Xo // 2 - planetSprite.width // 2
 planetSprite.y = Yo // 2 - planetSprite.height // 2
 
-# Initial positions and velocities
+# Initial positions and velocities and defin gravity
 x1, y1 = 0, 10
 Vx1, Vy1 = 0, 0
 
@@ -68,36 +68,7 @@ while True:
     rocketSprite1.x = int(x1 + Xo // 2)
     rocketSprite1.y = int(Yo - (y1 + Yo // 2))
 
-    # Update rocket 2 position and velocity
-    d2_2 = x2 * x2 + y2 * y2
-    if d2_2 < 1:
-        d2_2 = 1
-
-    Grav2 = G / d2_2
-    GravX2 = (-x2 / math.sqrt(d2_2)) * Grav2
-    GravY2 = (-y2 / math.sqrt(d2_2)) * Grav2
-
-    Ax2, Ay2 = GravX2, GravY2
-    if thumby.buttonA.pressed():
-        Ay2 += 1
-    if thumby.buttonL.pressed() and not thumby.buttonR.pressed():  # Avoid conflict with rocket 1
-        Ax2 -= 1
-    if thumby.buttonD.pressed() and not thumby.buttonU.pressed():  # Avoid conflict with rocket 1
-        Ay2 -= 1
-    if thumby.buttonR.pressed() and not thumby.buttonL.pressed():  # Avoid conflict with rocket 1
-        Ax2 += 1
-    if thumby.buttonA.pressed():  # button press to reset rocket 2
-        x2, y2, Vx2, Vy2 = 0, -10, 0, 0  # Reset rocket 2 position and velocity
-
-    Vx2 += Ax2 / 60
-    Vy2 += Ay2 / 60
-    x2 += Vx2 / 40
-    y2 += Vy2 / 40
-
-    rocketSprite2.x = int(x2 + Xo // 2)
-    rocketSprite2.y = int(Yo - (y2 + Yo // 2))
-    
-
+    # rocket 2 in/out
     rocketSprite2.x = (theirPlayerPos[0])
     rocketSprite2.y = (theirPlayerPos[1])
 
@@ -108,7 +79,7 @@ while True:
     thumby.display.drawSprite(planetSprite)
     thumby.display.update()
 
-    # Print positions for debugging (optional)
+    # Print positions for debugging
     #print(f"Rocket 1: {x1}, {y1}")
     #print(f"Rocket 2: {x2}, {y2}")
 
@@ -117,7 +88,7 @@ while True:
     sleep_time = max(0, int(1000 / 60 - (t1 - t0)))
     time.sleep_ms(sleep_time)
 
-
+    # communication between rockets
     myPlayerPos = bytearray([ rocketSprite1.x.to_bytes(1, 'little')[0] , rocketSprite1.y.to_bytes(1, 'little')[0]])
     print(myPlayerPos)
 
