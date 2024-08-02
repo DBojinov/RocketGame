@@ -28,6 +28,8 @@ planetSprite.y = Yo // 2 - planetSprite.height // 2
 x1, y1 = 0, 10
 Vx1, Vy1 = 0, 0
 
+theirPlayerPos = bytearray([0, 0])
+
 x2, y2 = 0, -10
 Vx2, Vy2 = 0, 0
 
@@ -84,7 +86,7 @@ while True:
         Ay2 -= 1
     if thumby.buttonR.pressed() and not thumby.buttonL.pressed():  # Avoid conflict with rocket 1
         Ax2 += 1
-    if thumby.buttonB.pressed() and thumby.buttonA.pressed():  # Combined button press to reset rocket 2
+    if thumby.buttonA.pressed():  # button press to reset rocket 2
         x2, y2, Vx2, Vy2 = 0, -10, 0, 0  # Reset rocket 2 position and velocity
 
     Vx2 += Ax2 / 60
@@ -94,6 +96,11 @@ while True:
 
     rocketSprite2.x = int(x2 + Xo // 2)
     rocketSprite2.y = int(Yo - (y2 + Yo // 2))
+    
+
+    rocketSprite2.x = (theirPlayerPos[0])
+    rocketSprite2.y = (theirPlayerPos[1])
+
 
     # Draw sprites on the display
     thumby.display.drawSprite(rocketSprite1)
@@ -102,10 +109,20 @@ while True:
     thumby.display.update()
 
     # Print positions for debugging (optional)
-    print(f"Rocket 1: {x1}, {y1}")
-    print(f"Rocket 2: {x2}, {y2}")
+    #print(f"Rocket 1: {x1}, {y1}")
+    #print(f"Rocket 2: {x2}, {y2}")
 
     # Maintain consistent FPS
     t1 = time.ticks_ms()
     sleep_time = max(0, int(1000 / 60 - (t1 - t0)))
     time.sleep_ms(sleep_time)
+
+
+    myPlayerPos = bytearray([ rocketSprite1.x.to_bytes(1, 'little')[0] , rocketSprite1.y.to_bytes(1, 'little')[0]])
+    print(myPlayerPos)
+
+    thumby.link.send(myPlayerPos)
+    received = thumby.link.receive()
+    
+    if received != None:
+        theirPlayerPos = received
